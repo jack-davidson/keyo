@@ -17,6 +17,8 @@ func parseEntry(args []string) Entry {
 		keyArg := pair[0]
 		valueArg := pair[1]
 		switch keyArg {
+		case "name":
+			entry.Name = valueArg
 		case "host":
 			entry.Host = valueArg
 		case "email":
@@ -32,6 +34,10 @@ func (a Args) Parse() {
 	switch a[1] {
 	case "new":
 		entry := parseEntry(a[2:])
+		if entry.Name == "" {
+			fmt.Println("Field 'name' required")
+			return
+		}
 		entry.Seed = core.Seed(1024)
 		entries := LoadEntries()
 		entries.New(entry)
@@ -40,16 +46,19 @@ func (a Args) Parse() {
 		entries := LoadEntries()
 		entries.Clear()
 		entries.Write()
+	case "list":
+		entries := LoadEntries()
+		for _, e := range entries.Entries {
+			fmt.Printf("%s:\n\t%s\n\t%s\n\t%s\n", e.Name, e.Host, e.Email, e.Username)
+		}
 	default:
 		fmt.Printf("Password: ")
 		complement, _ := term.ReadPassword(1)
 		fmt.Printf("\n")
 		entries := LoadEntries()
 		for _, e := range entries.Entries {
-			if e.Host == a[1] || e.Host == a[2] {
-				if e.Email == a[2] || e.Email == a[1] {
-					fmt.Println(core.Encode(core.Derive(complement, e.Seed)))
-				}
+			if e.Name == a[1] {
+				fmt.Println(core.Encode(core.Derive(complement, e.Seed)))
 			}
 		}
 	}

@@ -27,9 +27,13 @@ func (e *Entries) New(newEntry Entry) {
 	for _, entry := range e.Entries {
 		if entry.Email == newEntry.Email &&
 			entry.Host == newEntry.Host &&
-			entry.Username == newEntry.Username {
+			entry.Username == newEntry.Username &&
+			entry.Name == newEntry.Name {
 			fmt.Println("Cannot create duplicate entry")
 			return
+		}
+		if entry.Name == newEntry.Name {
+			fmt.Println("Entry must have unique Name")
 		}
 	}
 	e.Entries = append(e.Entries, newEntry)
