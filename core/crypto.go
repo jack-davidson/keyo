@@ -1,4 +1,4 @@
-package crypto
+package core
 
 import (
 	"crypto/rand"
@@ -14,7 +14,9 @@ func Seed(size int32) []byte {
 }
 
 func Derive(complement []byte, seed []byte) []byte {
-	passphrase := sha512.Sum512(seed)
+	compHash := sha512.Sum512(complement)
+	seedHash := sha512.Sum512(seed)
+	passphrase := sha512.Sum512([]byte(string(compHash[:]) + string(seedHash[:])))
 	return passphrase[:]
 }
 
