@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/jack-davidson/keyo/core"
@@ -19,6 +20,8 @@ func parseEntry(args []string) Entry {
 		switch keyArg {
 		case "name":
 			entry.Name = valueArg
+		case "len":
+			entry.Len, _ = strconv.Atoi(valueArg)
 		case "host":
 			entry.Host = valueArg
 		case "email":
@@ -58,7 +61,7 @@ func (a Args) Parse() {
 		entries := LoadEntries()
 		for _, e := range entries.Entries {
 			if e.Name == a[1] {
-				fmt.Println(core.Encode(core.Derive(complement, e.Seed)))
+				fmt.Println(core.Encode(core.Derive(complement, e.Seed))[:e.Len])
 			}
 		}
 	}
